@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SEA2SERVE | Blue Tech Intelligence Platform</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',sans-serif;scroll-behavior:smooth}
+
+body{
+background:linear-gradient(135deg,#02111d,#06324d,#0a4f6b);
+color:#fff;
+}
+
+/* NAVIGATION */
+nav{
+position:fixed;
+top:0;
+width:100%;
+background:rgba(0,0,0,0.6);
+backdrop-filter:blur(12px);
+padding:12px 8%;
+display:flex;
+justify-content:space-between;
+align-items:center;
+z-index:1000;
+}
+
+.brand{
+display:flex;
+align-items:center;
+gap:12px;
+}
+
+.brand img{
+height:55px;
+border-radius:10px;
+}
+
+.brand span{
+font-size:1.3rem;
+font-weight:bold;
+background:linear-gradient(to right,#00f7ff,#ffd166);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+nav ul{
+display:flex;
+list-style:none;
+gap:30px;
+}
+
+nav ul li a{
+color:#fff;
+text-decoration:none;
+font-weight:500;
+transition:0.3s;
+}
+
+nav ul li a:hover{color:#00f7ff}
+
+.menu-toggle{
+display:none;
+font-size:1.8rem;
+cursor:pointer;
+color:#00f7ff;
+}
+
+/* HERO */
+.hero{
+height:100vh;
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+text-align:center;
+background:
+linear-gradient(rgba(0,10,25,.8),rgba(0,20,40,.9)),
+url('https://images.unsplash.com/photo-1507525428034-b723cf961d3e') center/cover;
+padding:20px;
+}
+
+.hero h1{
+font-size:3rem;
+background:linear-gradient(to right,#00f7ff,#ffd166);
+-webkit-background-clip:text;
+-webkit-text-fill-color:transparent;
+}
+
+.hero p{
+margin:20px 0;
+font-size:1.2rem;
+color:#d9faff;
+max-width:700px;
+}
+
+.explore-btn{
+padding:14px 35px;
+border:none;
+border-radius:40px;
+background:linear-gradient(45deg,#00f7ff,#ffd166);
+color:#001;
+font-weight:bold;
+cursor:pointer;
+transition:0.3s;
+}
+
+.explore-btn:hover{
+transform:scale(1.05);
+box-shadow:0 0 20px #00f7ff;
+}
+
+section{padding:100px 8%}
+h2{color:#00f7ff;margin-bottom:30px;font-size:2rem}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+gap:30px;
+}
+
+.box{
+background:rgba(255,255,255,0.05);
+padding:25px;
+border-radius:20px;
+backdrop-filter:blur(12px);
+border:1px solid rgba(255,255,255,0.1);
+}
+
+input,select{
+padding:10px;
+border-radius:8px;
+border:none;
+width:100%;
+margin-bottom:12px;
+}
+
+button{
+padding:12px 25px;
+background:linear-gradient(45deg,#00f7ff,#ffd166);
+border:none;
+border-radius:25px;
+color:#001;
+cursor:pointer;
+font-weight:bold;
+}
+
+button:hover{transform:scale(1.03)}
+
+canvas{
+background:#021f33;
+padding:15px;
+border-radius:15px;
+}
+
+.result{margin-top:15px}
+.highlight{color:#ffd166;font-weight:bold}
+
+#map{height:450px;border-radius:20px;margin-top:20px}
+
+.kpi{
+background:rgba(0,0,0,0.5);
+padding:25px;
+border-radius:20px;
+text-align:center;
+}
+
+footer{
+background:#000;
+padding:40px;
+text-align:center;
+color:#aaa;
+margin-top:50px;
+}
+
+/* MOBILE RESPONSIVE */
+@media (max-width:768px){
+nav{padding:10px 5%}
+
+.brand img{height:42px}
+.brand span{font-size:1.05rem}
+
+.menu-toggle{display:block}
+
+nav ul{
+position:absolute;
+top:70px;
+right:5%;
+background:rgba(0,0,0,0.9);
+flex-direction:column;
+gap:15px;
+padding:20px;
+border-radius:15px;
+display:none;
+}
+
+nav ul.show{display:flex}
+
+.hero h1{font-size:2.1rem}
+.hero p{font-size:1rem}
+#map{height:300px}
+canvas{width:100% !important}
+}
+</style>
+</head>
+
+<body>
+
+<!-- NAV -->
+<nav>
+<div class="brand">
+<img src="Gemini_Generated_Image_74az8974az8974az.png" alt="SEA2SERVE Logo">
+<span>SEA2SERVE</span>
+</div>
+
+<div class="menu-toggle" onclick="toggleMenu()">☰</div>
+
+<ul id="navMenu">
+<li><a href="#predictor">AI Predictor</a></li>
+<li><a href="#fleet">Fleet Ops</a></li>
+<li><a href="#analytics">Analytics</a></li>
+<li><a href="#consumer">Market</a></li>
+</ul>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+<h1>SEA2SERVE</h1>
+<p>AI-Powered Blue-Tech Platform empowering Fishermen, Fleet Owners & Consumers with Real-Time Marine Intelligence</p>
+<a href="#predictor"><button class="explore-btn">Explore Platform ↓</button></a>
+</div>
+
+<!-- AI -->
+<section id="predictor">
+<h2>🎣 AI Fish Zone Predictor</h2>
+<div class="grid">
+<div class="box">
+<select id="species">
+<option>Tuna</option>
+<option>Mackerel</option>
+<option>Sardine</option>
+</select>
+
+<input id="temp" type="number" placeholder="Temperature °C">
+<input id="salinity" type="number" placeholder="Salinity ppt">
+<input id="depth" type="number" placeholder="Depth m">
+<input id="wind" type="number" placeholder="Wind km/h">
+<input id="history" type="number" placeholder="Historical Catch %">
+
+<button onclick="predictZone()">Predict Zone</button>
+<div class="result" id="predictionResult"></div>
+</div>
+<div id="map"></div>
+</div>
+</section>
+
+<!-- FLEET -->
+<section id="fleet">
+<h2>🚢 Fleet Optimization Intelligence</h2>
+<div class="grid">
+<div class="box">
+<input id="distance" type="number" placeholder="Distance (km)">
+<input id="fuel" type="number" placeholder="Fuel Used (L)">
+<input id="catchQty" type="number" placeholder="Catch (tons)">
+<input id="engine" type="number" placeholder="Engine Health %">
+
+<button onclick="analyzeFleet()">Analyze Fleet</button>
+<div class="result" id="fleetResult"></div>
+</div>
+<canvas id="fleetChart"></canvas>
+</div>
+</section>
+
+<!-- ANALYTICS -->
+<section id="analytics">
+<h2>📊 Operational Intelligence Dashboard</h2>
+<div class="grid">
+<div class="kpi"><h3>Total Profit</h3><p id="totalProfit">₹0</p></div>
+<div class="kpi"><h3>Avg Efficiency</h3><p id="avgEfficiency">0 km/L</p></div>
+<div class="kpi"><h3>Risk Index</h3><p id="riskIndex">0%</p></div>
+</div>
+</section>
+
+<!-- MARKET -->
+<section id="consumer">
+<h2>🛒 Consumer Fish Price</h2>
+<div class="box">
+<select id="fishType">
+<option>Mackerel</option>
+<option>Tuna</option>
+<option>Sardine</option>
+<option>Salmon</option>
+</select>
+
+<select id="marketLocation">
+<option>Mangalore</option>
+<option>Mumbai</option>
+<option>Chennai</option>
+<option>Kochi</option>
+</select>
+
+<button onclick="checkPrice()">Check Price</button>
+<div class="result" id="priceResult"></div>
+</div>
+</section>
+
+<footer>
+SEA2SERVE © 2026 | Intelligent Marine Commerce Platform
+</footer>
+
+<script>
+function toggleMenu(){
+document.getElementById("navMenu").classList.toggle("show");
+}
+
+const map=L.map('map').setView([13.1,74.8],7);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+let zoneLayer;
+
+function predictZone(){
+let score=Math.floor(Math.random()*40)+60;
+predictionResult.innerHTML=`Suitability Score: <span class="highlight">${score}%</span>`;
+if(zoneLayer) map.removeLayer(zoneLayer);
+zoneLayer=L.circle([13.2+Math.random()*0.3,74.7+Math.random()*0.3],
+{radius:30000,color:"#00f7ff",fillOpacity:0.4}).addTo(map);
+}
+
+const fleetChart=new Chart(document.getElementById("fleetChart"),{
+type:'bar',
+data:{labels:['Revenue','Fuel Cost','Profit'],datasets:[{data:[0,0,0]}]}
+});
+
+function analyzeFleet(){
+let profit=(catchQty.value*30000)-(fuel.value*95);
+fleetChart.data.datasets[0].data=[catchQty.value*30000,fuel.value*95,profit];
+fleetChart.update();
+fleetResult.innerHTML=`Profit: <span class="highlight">₹${profit}</span>`;
+totalProfit.innerText="₹"+profit;
+}
+
+function checkPrice(){
+priceResult.innerHTML=`Current Price: <span class="highlight">₹${Math.floor(Math.random()*200)+200}</span> per Kg`;
+}
+</script>
+
+</body>
+</html>
